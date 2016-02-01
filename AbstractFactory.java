@@ -1,102 +1,190 @@
 public class AbstractFactory
 {
-    public static void main(String[] args)
-    {
-        System.out.println("hello world\n");
+	public static void main(String[] args)
+	{
+		TaiwanSweetFactory taiwanFactory = new TaiwanSweetFactory();
+		Chocolate bar = taiwanFactory.CreateChocolate();
+		Candy marshmallow = taiwanFactory.CreateCandy();
+		bar.showInfo();
+		marshmallow.showInfo();
+		
+		System.out.println();
 
-        BeverageStore greenTeaStore = new BeverageStore(new GreenTeaFactory());
-        System.out.println("A order the GreenTea");
-        greenTeaStore.beverageOrder();
-        System.out.println("");
-        BeverageStore blackTeaStore = new BeverageStore(new BlackTeaFactory());
-        System.out.println("A order the BlackTea");
-        blackTeaStore.beverageOrder();
-    }
+		AmericaSweetFactory americaFactory = new AmericaSweetFactory();
+		Chocolate brick = americaFactory.CreateChocolate();
+		Candy jellybean = americaFactory.CreateCandy();
+		brick.showInfo();
+		jellybean.showInfo();
+	}
 }
 
-// Product
-class IBeverageProvide
+// Product chocolate
+abstract class Chocolate
 {
-    String name;
+	private String name;
+	private float price;
 
-    public void AddMaterial()
-    {
-        System.out.println(name + ", Put the material~~~");
-    }
+	public String getName()
+	{
+		return name;
+	}
 
-    public void Brew()
-    {
-        System.out.println(name + ", Brew the tea~~~");
-    }
+	public void setName(String name)
+	{
+		this.name = name;
+	}
 
-    public void PouredCup()
-    {
-        System.out.println(name + ", Poured in the cup~~~");
-    }
+	public float getPrice()
+	{
+		return price;
+	}
+
+	public void setPrice(float price)
+	{
+		this.price = price;
+	}
+
+	abstract public void showInfo();
 }
 
-// Concreate Product
-class GreenTea extends IBeverageProvide
+// Concrete Product
+class ChocolateBar extends Chocolate
 {
-    public GreenTea()
-    {
-        name = "GreenTea";
-    }
+	ChocolateBar(String name, float price)
+	{
+		super.setName(name);
+		super.setPrice(price);
+	}
+
+	@Override
+	public void showInfo()
+	{
+		System.out.println("ChocolateBar name : " + this.getName() + " , ChocolateBar price : " + this.getPrice());
+	}
 }
 
-class BlackTea extends IBeverageProvide
+class ChocolateBrick extends Chocolate
 {
-    public BlackTea()
-    {
-        name = "BlackTea";
-    }
+	public ChocolateBrick(String name, float price)
+	{
+		super.setName(name);
+		super.setPrice(price);
+	}
+
+	@Override
+	public void showInfo()
+	{
+		System.out.println("ChocolateBrick name : " + this.getName() + " , ChocolateBrick price : " + this.getPrice());
+	}
+}
+
+// Product candy
+abstract class Candy
+{
+	private String name;
+	private float price;
+	private String size;
+
+	abstract public void showInfo();
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public float getPrice()
+	{
+		return price;
+	}
+
+	public void setPrice(float price)
+	{
+		this.price = price;
+	}
+
+	public String getSize()
+	{
+		return size;
+	}
+
+	public void setSize(String size)
+	{
+		this.size = size;
+	}
+}
+
+class Marshmallow extends Candy
+{
+	public Marshmallow(String name, float price, String size)
+	{
+		super.setName(name);
+		super.setPrice(price);
+		super.setSize(size);
+	}
+
+	@Override
+	public void showInfo()
+	{
+		System.out.println("Marshmallow name : " + this.getName() + " , Marshmallow price : " + this.getPrice() + ", Marshmallow size : " + this.getSize());
+	}
+}
+
+class JellyBean extends Candy
+{
+	public JellyBean(String name, float price, String size)
+	{
+		super.setName(name);
+		super.setPrice(price);
+		super.setSize(size);
+	}
+
+	@Override
+	public void showInfo()
+	{
+		System.out.println("JellyBean name : " + this.getName() + " , JellyBean price : " + this.getPrice() + ", JellyBean size : " + this.getSize());
+	}
 }
 
 // Factory
-abstract class Factory
+interface SweetFactory
 {
-    abstract public IBeverageProvide createBeverage();
+	public Chocolate CreateChocolate();
+
+	public Candy CreateCandy();
 }
 
-// Concreate Factory
-class GreenTeaFactory extends Factory
+// Concrete Factory
+class TaiwanSweetFactory implements SweetFactory
 {
-    public IBeverageProvide createBeverage()
-    {
-        return new GreenTea();
-    }
+	@Override
+	public Chocolate CreateChocolate()
+	{
+		return new ChocolateBar("Bar", 15.3f);
+	}
+
+	@Override
+	public Candy CreateCandy()
+	{
+		return new Marshmallow("Marshmallow", 10.2f, "Big");
+	}
 }
 
-class BlackTeaFactory extends Factory
+class AmericaSweetFactory implements SweetFactory
 {
-    public IBeverageProvide createBeverage()
-    {
-        return new BlackTea();
-    }
-}
+	@Override
+	public Chocolate CreateChocolate()
+	{
+		return new ChocolateBrick("Brick", 27.8f);
+	}
 
-// Store
-class BeverageStore
-{
-    private Factory mFactory;
-
-    public BeverageStore(Factory factory)
-    {
-        mFactory = factory;
-    }
-
-    public IBeverageProvide beverageOrder()
-    {
-        IBeverageProvide beverage;
-        beverage = mFactory.createBeverage();
-
-        if (beverage != null)
-        {
-            beverage.AddMaterial();
-            beverage.Brew();
-            beverage.PouredCup();
-        }
-
-        return beverage;
-    }
+	@Override
+	public Candy CreateCandy()
+	{
+		return new JellyBean("JellyBean", 5.9f, "Small");
+	}
 }
